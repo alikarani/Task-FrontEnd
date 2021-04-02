@@ -2,6 +2,8 @@ import "./App.css";
 import Navbar from "./Components/Navbar";
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import Dropdown from "react-bootstrap/Dropdown";
 export default class App extends Component {
   constructor() {
     super();
@@ -150,7 +152,44 @@ export default class App extends Component {
             <i className="fas fa-search"></i> Search images with Latitude &
             Longitude
           </h1>
-          <button onClick={() => this.displayWishList()}>Wish list</button>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.displayWishList()}
+            >
+              Wish list
+            </button>
+            <div style={{ paddingLeft: "5%" }}>
+              <DropdownButton
+                id="dropdown-basic-button"
+                title="Longitude"
+                onSelect={(dropDownValue) =>
+                  this.setState({
+                    longitude: dropDownValue,
+                  })
+                }
+              >
+                <Dropdown.Item eventKey="30">30</Dropdown.Item>
+                <Dropdown.Item eventKey="40">40</Dropdown.Item>
+                <Dropdown.Item eventKey="50">50</Dropdown.Item>
+              </DropdownButton>
+            </div>
+            <div style={{ paddingLeft: "5%" }}>
+              <DropdownButton
+                id="dropdown-basic-button"
+                title="Latitude"
+                onSelect={(dropDownValue) =>
+                  this.setState({
+                    latitude: dropDownValue,
+                  })
+                }
+              >
+                <Dropdown.Item eventKey="30">30</Dropdown.Item>
+                <Dropdown.Item eventKey="40">40</Dropdown.Item>
+                <Dropdown.Item eventKey="50">50</Dropdown.Item>
+              </DropdownButton>
+            </div>
+          </div>
           <div className="container">
             <div className="row">
               <div className="col-md-6 my-3">
