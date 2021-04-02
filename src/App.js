@@ -41,8 +41,7 @@ export default class App extends Component {
     });
     if (this.state.latitude && this.state.longitude) {
       fetch(
-        `https://pythontask125.herokuapp.com/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`,
-        { mode: "no-cors" }
+        `https://pythontask125.herokuapp.com/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`
       )
         .then((response) => response.json())
         .then((data) => {
