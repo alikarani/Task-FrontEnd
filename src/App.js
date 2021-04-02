@@ -1,6 +1,7 @@
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import React, { Component } from "react";
+import Modal from "react-bootstrap/Modal";
 export default class App extends Component {
   constructor() {
     super();
@@ -9,8 +10,10 @@ export default class App extends Component {
       latitude: 0,
       searchedImages: [],
       imagesToBeDisplayed: [],
+      fovouriteImageUrls: [],
       loopStart: 0,
       loopEnd: 5,
+      modalHide: true,
     };
   }
 
@@ -71,22 +74,83 @@ export default class App extends Component {
     return imagesToBeDisplayed;
   };
   pagination = () => {
-    console.log("clcfk");
     let res = this.arrangeImages(this.state.searchedImages);
     this.setState({
       imagesToBeDisplayed: res,
     });
   };
 
+  displayWishList = () => {
+    this.setState({
+      modalHide: false,
+    });
+    fetch(`https://pythontask125.herokuapp.com/FavouriteImages`)
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({
+          fovouriteImageUrls: data.Data,
+        });
+      });
+  };
   render() {
     return (
       <div className="App">
         <Navbar />
+        <Modal
+          show={!this.state.modalHide}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Wish List
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              {this.state.fovouriteImageUrls.length ? (
+                this.state.fovouriteImageUrls.map((val, index) => (
+                  <div className="col-md-3" key={index}>
+                    <div className="card border-primary mb-3">
+                      <div className="card-body text-primary">
+                        <img
+                          src={val}
+                          alt="image"
+                          height="150"
+                          width="100%"
+                          alt={"image"}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <h6 style={{ margin: "auto" }}>
+                  Sorry we are unable to find any image for these co-ordinates
+                </h6>
+              )}
+              <div></div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              onClick={() =>
+                this.setState({
+                  modalHide: true,
+                })
+              }
+            >
+              Close
+            </button>
+          </Modal.Footer>
+        </Modal>
         <div className="jumbotron jumbotron-fluid">
           <h1 className=" text-center p-4">
             <i className="fas fa-search"></i> Search images with Latitude &
             Longitude
           </h1>
+          <button onClick={() => this.displayWishList()}>Wish list</button>
           <div className="container">
             <div className="row">
               <div className="col-md-6 my-3">
@@ -146,9 +210,9 @@ export default class App extends Component {
                 </div>
               ))
             ) : (
-              <h1>
+              <h5 style={{ margin: "auto" }}>
                 Sorry we are unable to find any image for these co-ordinates
-              </h1>
+              </h5>
             )}
             <div></div>
           </div>
