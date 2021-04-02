@@ -4,12 +4,15 @@ import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import { Api_End_Point } from "./globals";
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
       longitude: 0,
       latitude: 0,
+      longitudeList: [],
+      latitudeList: [],
       searchedImages: [],
       imagesToBeDisplayed: [],
       fovouriteImageUrls: [],
@@ -17,6 +20,16 @@ export default class App extends Component {
       loopEnd: 5,
       modalHide: true,
     };
+  }
+  componentDidMount() {
+    fetch(`${Api_End_Point}/GeoLocationList/`)
+      .then((response) => response.json())
+      .then((data) =>
+        this.setState({
+          latitudeList: data.Data.latitude,
+          longitudeList: data.Data.longitude,
+        })
+      );
   }
 
   handleChange = (e) => {
@@ -31,10 +44,7 @@ export default class App extends Component {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ imageUrl: url }),
     };
-    fetch(
-      "https://pythontask125.herokuapp.com/FavouriteImages/",
-      requestOptions
-    )
+    fetch("${Api_End_Point}/FavouriteImages/", requestOptions)
       .then((response) => response.json())
       .then((data) => console.log(data));
   };
@@ -46,11 +56,10 @@ export default class App extends Component {
     });
     if (this.state.latitude && this.state.longitude) {
       fetch(
-        `https://pythontask125.herokuapp.com/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`
+        `${Api_End_Point}/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           let imagesToBeDisplayed = this.arrangeImages(data.Data);
           this.setState({
             searchedImages: data.Data,
@@ -86,7 +95,7 @@ export default class App extends Component {
     this.setState({
       modalHide: false,
     });
-    fetch(`https://pythontask125.herokuapp.com/FavouriteImages`)
+    fetch(`${Api_End_Point}/FavouriteImages`)
       .then((response) => response.json())
       .then((data) => {
         this.setState({
@@ -169,9 +178,13 @@ export default class App extends Component {
                   })
                 }
               >
-                <Dropdown.Item eventKey="30">30</Dropdown.Item>
-                <Dropdown.Item eventKey="40">40</Dropdown.Item>
-                <Dropdown.Item eventKey="50">50</Dropdown.Item>
+                {this.state.longitudeList.length ? (
+                  this.state.longitudeList.map((val, index) => (
+                    <Dropdown.Item eventKey={val}>{val}</Dropdown.Item>
+                  ))
+                ) : (
+                  <Dropdown.Item eventKey="">Null</Dropdown.Item>
+                )}
               </DropdownButton>
             </div>
             <div style={{ paddingLeft: "5%" }}>
@@ -184,9 +197,13 @@ export default class App extends Component {
                   })
                 }
               >
-                <Dropdown.Item eventKey="30">30</Dropdown.Item>
-                <Dropdown.Item eventKey="40">40</Dropdown.Item>
-                <Dropdown.Item eventKey="50">50</Dropdown.Item>
+                {this.state.latitudeList.length ? (
+                  this.state.latitudeList.map((val, index) => (
+                    <Dropdown.Item eventKey={val}>{val}</Dropdown.Item>
+                  ))
+                ) : (
+                  <Dropdown.Item eventKey="">Null</Dropdown.Item>
+                )}
               </DropdownButton>
             </div>
           </div>
