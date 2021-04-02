@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Api_End_Point } from "./globals";
+import axios from "axios";
 export default class App extends Component {
   constructor() {
     super();
@@ -22,14 +23,12 @@ export default class App extends Component {
     };
   }
   componentDidMount() {
-    fetch(`${Api_End_Point}/GeoLocationList/`)
-      .then((response) => response.json())
-      .then((data) =>
-        this.setState({
-          latitudeList: data.Data.latitude,
-          longitudeList: data.Data.longitude,
-        })
-      );
+    axios.get(`${Api_End_Point}/GeoLocationList/`).then((data) => {
+      this.setState({
+        latitudeList: data.data.Data.latitude,
+        longitudeList: data.data.Data.longitude,
+      });
+    });
   }
 
   handleChange = (e) => {
@@ -39,14 +38,10 @@ export default class App extends Component {
   };
 
   onLove = (url) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageUrl: url }),
-    };
-    fetch("${Api_End_Point}/FavouriteImages/", requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    const body = { imageUrl: url };
+    axios
+      .post(`${Api_End_Point}/FavouriteImages/`, body)
+      .then((response) => console.log(response));
   };
 
   handleClick = () => {
@@ -55,14 +50,14 @@ export default class App extends Component {
       loopEnd: 5,
     });
     if (this.state.latitude && this.state.longitude) {
-      fetch(
-        `${Api_End_Point}/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`
-      )
-        .then((response) => response.json())
+      axios
+        .get(
+          `${Api_End_Point}/SearchImages/?lat=${this.state.latitude}&lon=${this.state.longitude}`
+        )
         .then((data) => {
-          let imagesToBeDisplayed = this.arrangeImages(data.Data);
+          let imagesToBeDisplayed = this.arrangeImages(data.data.Data);
           this.setState({
-            searchedImages: data.Data,
+            searchedImages: data.data.Data,
             imagesToBeDisplayed: imagesToBeDisplayed,
           });
         });
@@ -95,13 +90,12 @@ export default class App extends Component {
     this.setState({
       modalHide: false,
     });
-    fetch(`${Api_End_Point}/FavouriteImages`)
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({
-          fovouriteImageUrls: data.Data,
-        });
+
+    axios.get(`${Api_End_Point}/FavouriteImages`).then((data) => {
+      this.setState({
+        fovouriteImageUrls: data.data.Data,
       });
+    });
   };
   render() {
     return (
