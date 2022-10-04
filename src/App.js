@@ -267,6 +267,19 @@ export default class App extends Component {
             <div></div>
           </div>
         </div>
+        <form>
+      <label>
+        <p>Username</p>
+        <input type="text" />
+      </label>
+      <label>
+        <p>Password</p>
+        <input type="password" />
+      </label>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
         <button
           onClick={this.pagination}
           className="btn btn-primary btn-lg mt-3"
